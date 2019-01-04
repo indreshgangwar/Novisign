@@ -1,0 +1,210 @@
+/******test class for Registration_form apex class********************/
+
+@isTest
+public class Registration_form_Test {
+
+  public static testMethod void testRegistration_form(){
+   //  Test.starttest();
+  //  Id pricebookId = pb.Id;  
+        Account acc = New Account();
+        acc.RecordTypeId = '0120Q0000004bq2QAA';
+        acc.name= 'cuscompanyname';
+        insert acc;
+        
+        Account accreseller = New Account();
+        accreseller.RecordTypeId = '0120Q0000004bpxQAA';
+        accreseller.name= 'resell';
+        insert accreseller;
+      
+        Contact con = new Contact();
+        con.RecordTypeId = '0120Q0000004b7lQAA';
+        con.FirstName = 'cusfirstname';
+        con.LastName = 'cuslastname';
+        con.Email = 'ss@gmail.com';
+        con.Phone = '9807890987';
+        con.Country_Code__c = 'countycodec';
+        con.Mode_Of_Communication__c = 'Phone';
+        con.MobilePhone = '9807890987';
+        con.MailingStreet = '123';
+        con.MailingCity = 'cuscity';
+        con.MailingCountry = 'cuscountry';
+        con.MailingPostalCode = '12345fdf';
+        con.Instance_to_Novisign__c = 'Instancetonovisign';
+        con.Admin_login_tool__c = 'adminlogintool';
+        con.Number_of_licenses_to_be_activated__c =  Integer.valueof(9);  //9.3;  //'Integer.valueof(nooflincences)';
+        con.For_each_license_to_be_activated_we_n__c = '667';
+        con.Philips_Model_Number__c = 'philipsmodel';
+        con.Serial_Number__c = '6374376';
+        con.First_NameReseller__c = 'firstnameseller';
+        con.Last_NameReseller__c = 'Lastnamereseller';
+        con.E_mailreseller_c__c = 'aa@gmail.com';
+        con.PhoneReseller__c = '9809809809';
+        con.Country_Code_Reseller__c = '76778';
+        con.Mobile__c = '9809809809';
+        con.Date_of_PurchaseReseller__c = System.today();
+        con.AccountId = acc.Id;
+        insert con;
+    // Test.stoptest(); 
+   
+ Contact conreseller = new Contact();
+        conreseller.RecordTypeId = '0120Q0000004bq7QAA';
+        conreseller.FirstName = 'cusfirstname';
+        conreseller.LastName = 'cuslastname';
+        conreseller.Email = 'ssv@gmail.com';
+        conreseller.Phone = '9807890987';
+        conreseller.Country_Code__c = 'countycodec';
+        conreseller.Mode_Of_Communication__c = 'Phone';
+        conreseller.MobilePhone = '9807890987';
+        conreseller.MailingStreet = '123';
+        conreseller.MailingCity = 'cuscity';
+        conreseller.MailingCountry = 'cuscountry';
+        conreseller.MailingPostalCode = '12345fdf';
+        conreseller.Instance_to_Novisign__c = 'Instancetonovisign';
+        conreseller.Admin_login_tool__c = 'adminlogintool';
+        conreseller.Number_of_licenses_to_be_activated__c = 6;  //'Integer.valueof(nooflincences)';
+        conreseller.For_each_license_to_be_activated_we_n__c = 'foreachlincenses';
+        conreseller.Philips_Model_Number__c = 'philipsmodel';
+        conreseller.Serial_Number__c = '6374376';
+        conreseller.First_NameReseller__c = 'firstnameseller';
+        conreseller.Last_NameReseller__c = 'Lastnamereseller';
+        conreseller.E_mailreseller_c__c = 'aaf@gmail.com';
+        conreseller.PhoneReseller__c = '9809809809';
+        conreseller.Country_Code_Reseller__c = '76778';
+        conreseller.Mobile__c = '9809809809';
+        conreseller.Date_of_PurchaseReseller__c = System.today();
+        conreseller.AccountId = accreseller.Id;
+        insert conreseller;  
+      
+        Partner p1 = new Partner();
+        p1.AccountFromId = acc.id;
+        p1.AccountToId = accreseller.id;
+        p1.Role = 'Reseller';
+        insert p1;
+
+     List<pricebook2> stdpb = [select Id,name,isActive from pricebook2 where IsStandard = TRUE limit 1];    
+      
+      Product2 p2 = New Product2();
+      p2.Name = 'BDT3215EC/32';
+      p2.Family = 'Signage';      
+      p2.isActive = true;
+      insert p2;
+      
+      PricebookEntry pbe = New PricebookEntry();
+     // pbe.Pricebook2Id = stdpb[0].Id;
+       pbe.Pricebook2Id = Test.getStandardPricebookId();
+       //pbe.Pricebook2Id = pb.Id;
+       pbe.Product2Id = p2.id;
+       pbe.UnitPrice = 100.00;
+       pbe.IsActive = true;
+       insert pbe; 
+      
+      
+     pricebook2 pb = New pricebook2();      
+      pb.Name='testDIE';
+      pb.isActive = true;
+      insert pb; 
+      
+      PricebookEntry pb1 = New PricebookEntry();
+      pb1.Pricebook2Id = Test.getStandardPricebookId();
+     pb1.Pricebook2Id = pb.Id;
+  //  pb1.Pricebook2Id = stdpb[0].Id;
+      pb1.Product2Id = p2.id;
+      pb1.UnitPrice = 100.00;
+      pb1.IsActive = true;
+      insert pb1;  
+      
+        Opportunity oppo =New Opportunity();
+        oppo.Name = acc.name;
+        oppo.CloseDate = system.today();
+        oppo.StageName = 'Qualification';
+        oppo.AccountId = acc.id;
+       //oppo.Pricebook2Id = stdpb[0].Id;
+        oppo.Pricebook2Id = pb.Id;       
+        // oppo.Pricebook2Id = Test.getStandardPricebookId();
+        insert oppo;
+      
+      OpportunityLineItem oli = new OpportunityLineItem();
+      oli.OpportunityId = oppo.Id;
+      oli.Quantity = 1;
+      oli.PricebookEntryId = pb1.Id; 
+      oli.Product2Id = p2.Id;    
+     // oli.UnitPrice=0.01;
+      oli.TotalPrice=2000;
+      oli.Purchase_Date_Time__c = System.now();
+      oli.Philips_Model_Number__c = 'BDT3215EC/32';
+      oli.Serial_Number__c = '32445';     
+      insert oli;
+      
+      
+   PageReference pageRef = Page.Registration_Form; // Add your VF page Name here
+ //  pageRef.getParameters().put('id', String.valueOf(con.Id));
+   //pageRef.getParameters().put('id', acc.Id);
+   Test.setCurrentPage(pageRef);
+      
+     // ApexPages.StandardController sc = new ApexPages.standardController(acc);
+
+      apexpages.currentpage().getparameters().put('checkboxcheck','1');
+      apexpages.currentpage().getparameters().put('windex','2');
+      //  apexpages.currentpage().getparameters().put('s1','1');
+       
+      Registeration_form testRegForm = new Registeration_form();  
+        testRegForm.wrapIndex = 0;
+        testRegForm.errormessage = 'abc';
+        testRegForm.cuslastname = 'vgh';
+        testRegForm.cuscompanyname = 'abc pvt ltd';
+        testRegForm.cusphone ='9090909090';
+        testRegForm.countycodec ='+98';
+        testRegForm.cusmobile ='9090909090';
+        testRegForm.cusstreet ='hjk';
+        testRegForm.cuscity = 'Delhi';      
+        testRegForm.cuscountry ='India';
+        testRegForm.cuspostcode ='124001';
+        testRegForm.Instancetonovisign ='dd';
+        testRegForm.adminlogintool ='ff';         
+        testRegForm.foreachlincenses = 'dfg';
+        testRegForm.philipsmodel = '3';
+        testRegForm.serialnumber = '35456';
+        testRegForm.firstnameseller = 'abc';
+        testRegForm.Lastnamereseller ='ghj';
+        testRegForm.companyresller = 'abc pvt ltd';
+        testRegForm.emailresller ='aaaa@gmail.com';
+        testRegForm.phoneresller = '9090909090';
+        testRegForm.countycodecreseller ='9090909090';
+        testRegForm.mobileseller = '9090909090';
+        testRegForm.dateofpurchase =system.today();               
+        testRegForm.errormessagereseller ='ghj';      
+         testRegForm.selectProduct ='signage';
+        // testRegForm.selectProdList ='signage';
+         testRegForm.selectedProd ='signage';
+         testRegForm.ProductFamily ='signage';
+         testRegForm.modecommunication ='Phone';
+         testRegForm.nooflincences='6';
+         testRegForm.cusemail ='sssss@gmail.com';
+       
+          
+          
+        testRegForm.ProdFamilyList();
+        testRegForm.checkFunction();
+        testRegForm.WrapProductlist();
+        testRegForm.Wrapuantity();
+        testRegForm.getListProduct();
+        testRegForm.DelProductRow();
+        testRegForm.addproductrow();
+     // try{
+        testRegForm.checkEmail();
+         //  }catch(exception e){}
+        testRegForm.checkEmailReseller();
+     
+        testRegForm.previous();
+        testRegForm.next();
+        testRegForm.submit(); 
+            
+        Registeration_form.allProducts  wrap = New Registeration_form.allProducts();
+        wrap.serialnumber ='6778';
+      //  wrap.modelnumber ='6544';
+        wrap.cusemailOppli ='sssss@gmail.com';
+       // wrap.productInfodate = system.today();
+      testRegForm.allProductList.add(wrap);
+     
+  }
+}
